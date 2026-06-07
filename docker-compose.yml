@@ -1,0 +1,43 @@
+services:
+  db_f1_percona:
+    image: percona:8.0
+    container_name: db_f1_percona
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      # Cambiamos la ruta local por un volumen gestionado por Docker
+      - db_f1_data:/var/lib/mysql
+
+  db_viewer_adminer:
+    image: adminer:latest
+    container_name: db_viewer_adminer
+    restart: always
+    ports:
+      - "8083:8080"
+    depends_on:
+      - db_f1_percona
+
+  cache_f1_keydb:
+    image: eqalpha/keydb:latest
+    container_name: cache_f1_keydb
+    restart: always
+
+  web_f1_litespeed:
+    image: litespeedtech/openlitespeed:latest
+    container_name: web_f1_litespeed
+    restart: always
+    ports:
+      - "${APP_PORT}:80"
+      - "${ADMIN_PORT}:7080"
+    environment:
+      TZ: ${TIMEZONE}
+    volumes:
+      # El frontend lo dejamos local para que puedas editar los archivos
+      - ./wp_f1_data:/var/www/vhosts/localhost/html
+    depends_on:
+      - db_f1_percona
+      - cache_f1_keydb
