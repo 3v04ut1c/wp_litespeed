@@ -2,6 +2,9 @@ services:
   db_f1_percona:
     image: percona:8.0
     container_name: db_f1_percona
+    labels:
+      - "com.evolutic.proyecto=wp_litespeed"
+      - "com.evolutic.db=percona"
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
