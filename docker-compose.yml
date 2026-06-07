@@ -44,3 +44,7 @@ services:
     depends_on:
       - db_f1_percona
       - cache_f1_keydb
+  redis:
+      image: redis:alpine
+      container_name: cache_f1
+      restart: always
