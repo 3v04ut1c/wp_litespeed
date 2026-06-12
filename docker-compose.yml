@@ -12,7 +12,6 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
-      # Cambiamos la ruta local por un volumen gestionado por Docker
       - db_f1_data:/var/lib/mysql
 
   db_viewer_adminer:
@@ -39,12 +38,10 @@ services:
     environment:
       TZ: ${TIMEZONE}
     volumes:
-      # El frontend lo dejamos local para que puedas editar los archivos
       - ./wp_f1_data:/var/www/vhosts/localhost/html
     depends_on:
       - db_f1_percona
       - cache_f1_keydb
-  redis:
-      image: redis:alpine
-      container_name: cache_f1
-      restart: always
+
+volumes:
+  db_f1_data:
